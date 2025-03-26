@@ -41,4 +41,31 @@ Metrics to Track
 - Number of retransmissions
 - Channel utilization
 
+------------------------------
+
+Extra inf Andreas:
+
+Throughput.  Pakketten per secondesteeds verhogen en dan PDR(Packet delivery ratio) meten, deze zal plotseling PDR dalen.
+
+
+Max BB is 200kbits per seconden
+elk pakket maximaal 127 bytes
+
+
+Disturbances zijn speciale nodes in cooja
+Exponantial Backoff (Slimme wachttijd strategie) ... is setting in cooja.  Nakijken wat maximaal is en invloed op trouchput en latency
+
+We behouden de setup (aantal nodes en posities), we kiezen de topologie en blijft behouden
+
+Bonus :  Als slotframe van 7 naar bv 9 gaat
+
+
+Vandaag : setup netwerk
+Disturbance node
+idee exponantial backoff
+
+
+
+
+
 
