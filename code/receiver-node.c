@@ -61,10 +61,17 @@
           const uint8_t *data,
           uint16_t datalen)
  {
-   printf("Data received from ");
-   uip_debug_ipaddr_print(sender_addr);
-   printf(" on port %d from port %d with length %d: '%s'\n",
-          receiver_port, sender_port, datalen, data);
+  
+  printf("Data received from ");
+  uip_debug_ipaddr_print(sender_addr);
+  
+  // Zorg ervoor dat we het als string kunnen afdrukken
+  char msg[datalen + 1];
+  memcpy(msg, data, datalen);
+  msg[datalen] = '\0';  // Zorg voor null-terminatie
+  
+  printf(" on port %d from port %d with length %d: '%s'\n",
+         receiver_port, sender_port, datalen, msg);
  }
  /*---------------------------------------------------------------------------*/
  static uip_ipaddr_t *

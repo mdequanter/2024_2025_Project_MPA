@@ -13,7 +13,7 @@ CONTIKI_PATH = os.path.dirname(os.path.dirname(SELF_PATH))
 COOJA_PATH = "/home/ubuntu/contiki-ng/tools/cooja"
 
 cooja_input = 'simulation_CSMA_CA_28.csc'
-cooja_output = 'COOJA.testlog'
+cooja_output = "code/analyses/COOJA.testlog"
 
 #######################################################
 # Run a child process and get its output

@@ -106,7 +106,7 @@ def plot_results(nodes):
 
 # Main function
 def main():
-    log_filename = "COOJA.testlog"
+    log_filename = "code/analyses/COOJA.testlog"
 
     if len(sys.argv) > 1:
         log_filename = sys.argv[1]

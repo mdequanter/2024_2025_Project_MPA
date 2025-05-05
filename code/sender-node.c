@@ -43,9 +43,9 @@
  
  #define UDP_PORT 1234
  
- #define SEND_INTERVAL		(60 * CLOCK_SECOND)
+ #define SEND_INTERVAL		(1 * CLOCK_SECOND)
  #define SEND_TIME		(random_rand() % (SEND_INTERVAL))
- 
+
  static struct simple_udp_connection unicast_connection;
  
  /*---------------------------------------------------------------------------*/
@@ -76,6 +76,7 @@
    uip_ip6addr_copy(&ipaddr, default_prefix);
    uip_ds6_set_addr_iid(&ipaddr, &uip_lladdr);
    uip_ds6_addr_add(&ipaddr, 0, ADDR_AUTOCONF);
+   
  
    printf("IPv6 addresses: ");
    for(i = 0; i < UIP_DS6_ADDR_NB; i++) {
@@ -114,22 +115,39 @@
      default_prefix = uip_ds6_default_prefix();
      uip_ip6addr_copy(&addr, default_prefix);
  
-     addr.u16[4] = UIP_HTONS(0x0201);
-     addr.u16[5] = UIP_HTONS(0x0001);
-     addr.u16[6] = UIP_HTONS(0x0001);
-     addr.u16[7] = UIP_HTONS(0x0001);
+     addr.u16[4] = UIP_HTONS(0x0210);
+     addr.u16[5] = UIP_HTONS(0x0010);
+     addr.u16[6] = UIP_HTONS(0x0010);
+     addr.u16[7] = UIP_HTONS(0x0010);
  
      {
-       static unsigned int message_number;
-       char buf[20];
- 
-       printf("Sending unicast to ");
-       uip_debug_ipaddr_print(&addr);
-       printf("\n");
-       sprintf(buf, "Message %d", message_number);
-       message_number++;
-       simple_udp_sendto(&unicast_connection, buf, strlen(buf) + 1, &addr);
-     }
+      static unsigned int message_number = 0;
+      char buf[80];  // buffer groot genoeg voor IP + nummer
+      char ipbuf[40];
+      uip_ipaddr_t *my_ip = NULL;
+      
+      // Zoek eigen globale IPv6-adres
+      for(int i = 0; i < UIP_DS6_ADDR_NB; i++) {
+        if(uip_ds6_if.addr_list[i].isused &&
+           uip_ds6_if.addr_list[i].state == ADDR_PREFERRED) {
+          my_ip = &uip_ds6_if.addr_list[i].ipaddr;
+          break;
+        }
+      }
+      
+      if(my_ip != NULL) {
+        uiplib_ipaddr_snprint(ipbuf, sizeof(ipbuf), my_ip);
+        snprintf(buf, sizeof(buf), "Msg %s %d", ipbuf, message_number);
+      } else {
+        snprintf(buf, sizeof(buf), "Msg unknown %d", message_number);
+      }
+      
+      printf("Sending message: '%s' to ", buf);
+      uip_debug_ipaddr_print(&addr);
+      printf("\n");
+      
+      simple_udp_sendto(&unicast_connection, buf, strlen(buf) + 1, &addr);
+      message_number++;      }
    }
  
    PROCESS_END();
