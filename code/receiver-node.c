@@ -47,6 +47,8 @@
  #define UDP_PORT 1234
  
  static struct simple_udp_connection unicast_connection;
+
+ uint32_t hops;
  
  /*---------------------------------------------------------------------------*/
  PROCESS(receiver_node_process, "Receiver node");
@@ -61,6 +63,9 @@
           const uint8_t *data,
           uint16_t datalen)
  {
+
+  hops = uip_ds6_if.cur_hop_limit - UIP_IP_BUF->ttl + 1;
+  printf("Received %d hops\n", hops);
   
   printf("Data received from ");
   uip_debug_ipaddr_print(sender_addr);
@@ -70,8 +75,8 @@
   memcpy(msg, data, datalen);
   msg[datalen] = '\0';  // Zorg voor null-terminatie
   
-  printf(" on port %d from port %d with length %d: '%s'\n",
-         receiver_port, sender_port, datalen, msg);
+  printf(" on port %d from port %d in %d hops with datalength %d: '%s'\n",
+         receiver_port, sender_port,hops, datalen, msg);
  }
  /*---------------------------------------------------------------------------*/
  static uip_ipaddr_t *

@@ -2,8 +2,8 @@
 <simconf version="2023090101">
   <simulation>
     <title>project_MPA</title>
-    <speedlimit>2.0</speedlimit>
-    <randomseed>123456</randomseed>
+    <speedlimit>1.0</speedlimit>
+    <randomseed>generated</randomseed>
     <motedelay_us>1000000</motedelay_us>
     <radiomedium>
       org.contikios.cooja.radiomediums.UDGM
@@ -384,7 +384,7 @@
       <formatted_time />
       <coloring />
     </plugin_config>
-    <bounds x="-278" y="308" height="240" width="1250" z="1" />
+    <bounds x="508" y="314" height="240" width="1250" z="2" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.TimeLine
@@ -422,7 +422,7 @@
       <showLEDs />
       <zoomfactor>500.0</zoomfactor>
     </plugin_config>
-    <bounds x="0" y="920" height="166" width="1650" z="14" />
+    <bounds x="0" y="920" height="166" width="1650" z="19" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.Notes
@@ -430,7 +430,7 @@
       <notes>Enter notes here</notes>
       <decorations>true</decorations>
     </plugin_config>
-    <bounds x="400" y="0" height="160" width="1250" z="13" />
+    <bounds x="400" y="0" height="160" width="1250" z="18" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.Notes
@@ -438,7 +438,7 @@
       <notes>Enter notes here</notes>
       <decorations>true</decorations>
     </plugin_config>
-    <bounds x="400" y="0" height="160" width="1250" z="12" />
+    <bounds x="400" y="0" height="160" width="1250" z="17" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.ScriptRunner
@@ -446,12 +446,12 @@
       <scriptfile>[CONFIG_DIR]/coojalogger.js</scriptfile>
       <active>true</active>
     </plugin_config>
-    <bounds x="0" y="0" height="700" width="600" z="7" />
+    <bounds x="520" y="142" height="700" width="1274" z="5" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.MoteInformation
     <mote_arg>25</mote_arg>
-    <bounds x="0" y="0" height="155" width="383" z="11" />
+    <bounds x="0" y="0" height="155" width="383" z="16" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.MoteInterfaceViewer
@@ -460,16 +460,49 @@
       <interface>IP Addresses</interface>
       <scrollpos>0,0</scrollpos>
     </plugin_config>
-    <bounds x="0" y="0" height="300" width="350" z="10" />
+    <bounds x="0" y="0" height="300" width="350" z="15" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.MoteInformation
     <mote_arg>11</mote_arg>
-    <bounds x="0" y="0" height="155" width="383" z="9" />
+    <bounds x="0" y="0" height="155" width="383" z="14" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.MoteInterfaceViewer
     <mote_arg>11</mote_arg>
+    <plugin_config>
+      <interface>IP Addresses</interface>
+      <scrollpos>0,0</scrollpos>
+    </plugin_config>
+    <bounds x="0" y="0" height="300" width="350" z="13" />
+  </plugin>
+  <plugin>
+    org.contikios.cooja.plugins.MoteInformation
+    <mote_arg>0</mote_arg>
+    <bounds x="0" y="0" height="155" width="383" z="12" />
+  </plugin>
+  <plugin>
+    org.contikios.cooja.plugins.MoteInterfaceViewer
+    <mote_arg>0</mote_arg>
+    <plugin_config>
+      <interface>IP Addresses</interface>
+      <scrollpos>0,0</scrollpos>
+    </plugin_config>
+    <bounds x="0" y="0" height="300" width="350" z="11" />
+  </plugin>
+  <plugin>
+    org.contikios.cooja.plugins.MoteInformation
+    <mote_arg>25</mote_arg>
+    <bounds x="0" y="0" height="155" width="383" z="10" />
+  </plugin>
+  <plugin>
+    org.contikios.cooja.plugins.MoteInformation
+    <mote_arg>0</mote_arg>
+    <bounds x="0" y="0" height="155" width="383" z="9" />
+  </plugin>
+  <plugin>
+    org.contikios.cooja.plugins.MoteInterfaceViewer
+    <mote_arg>0</mote_arg>
     <plugin_config>
       <interface>IP Addresses</interface>
       <scrollpos>0,0</scrollpos>
@@ -478,35 +511,66 @@
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.MoteInformation
-    <mote_arg>0</mote_arg>
-    <bounds x="0" y="0" height="155" width="383" z="6" />
+    <mote_arg>10</mote_arg>
+    <bounds x="0" y="0" height="155" width="383" z="7" />
   </plugin>
   <plugin>
     org.contikios.cooja.plugins.MoteInterfaceViewer
-    <mote_arg>0</mote_arg>
+    <mote_arg>10</mote_arg>
     <plugin_config>
       <interface>IP Addresses</interface>
       <scrollpos>0,0</scrollpos>
     </plugin_config>
-    <bounds x="0" y="0" height="300" width="350" z="5" />
+    <bounds x="0" y="0" height="300" width="350" z="6" />
   </plugin>
   <plugin>
-    org.contikios.cooja.plugins.MoteInformation
-    <mote_arg>25</mote_arg>
-    <bounds x="0" y="0" height="155" width="383" z="4" />
-  </plugin>
-  <plugin>
-    org.contikios.cooja.plugins.MoteInformation
-    <mote_arg>0</mote_arg>
-    <bounds x="0" y="0" height="155" width="383" z="3" />
-  </plugin>
-  <plugin>
-    org.contikios.cooja.plugins.MoteInterfaceViewer
-    <mote_arg>0</mote_arg>
+    org.contikios.cooja.plugins.RadioLogger
     <plugin_config>
-      <interface>IP Addresses</interface>
-      <scrollpos>0,0</scrollpos>
+      <split>150</split>
+      <formatted_time />
     </plugin_config>
-    <bounds x="0" y="0" height="300" width="350" z="2" />
+    <bounds x="0" y="0" height="300" width="500" z="4" />
+  </plugin>
+  <plugin>
+    org.contikios.cooja.plugins.PowerTracker
+    <bounds x="0" y="0" height="400" width="400" z="3" />
+  </plugin>
+  <plugin>
+    org.contikios.cooja.plugins.TimeLine
+    <plugin_config>
+      <mote>0</mote>
+      <mote>1</mote>
+      <mote>2</mote>
+      <mote>3</mote>
+      <mote>4</mote>
+      <mote>5</mote>
+      <mote>6</mote>
+      <mote>7</mote>
+      <mote>8</mote>
+      <mote>9</mote>
+      <mote>10</mote>
+      <mote>11</mote>
+      <mote>12</mote>
+      <mote>13</mote>
+      <mote>14</mote>
+      <mote>15</mote>
+      <mote>16</mote>
+      <mote>17</mote>
+      <mote>18</mote>
+      <mote>19</mote>
+      <mote>20</mote>
+      <mote>21</mote>
+      <mote>22</mote>
+      <mote>23</mote>
+      <mote>24</mote>
+      <mote>25</mote>
+      <mote>26</mote>
+      <mote>27</mote>
+      <showRadioRXTX />
+      <showRadioHW />
+      <showLEDs />
+      <zoomfactor>500.0</zoomfactor>
+    </plugin_config>
+    <bounds x="0" y="905" height="166" width="1794" z="1" />
   </plugin>
 </simconf>

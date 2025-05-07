@@ -43,7 +43,9 @@
  
  #define UDP_PORT 1234
  
- #define SEND_INTERVAL		(1 * CLOCK_SECOND)
+ //#define SEND_INTERVAL		XXXSEND_INTERVALXXX
+ #define SEND_INTERVAL  XXXSEND_INTERVALXXX
+ #define START_DELAY		(CLOCK_SECOND*900)
  #define SEND_TIME		(random_rand() % (SEND_INTERVAL))
 
  static struct simple_udp_connection unicast_connection;
@@ -93,6 +95,8 @@
  {
    static struct etimer periodic_timer;
    static struct etimer send_timer;
+   static struct etimer start_timer;
+   
    uip_ipaddr_t addr;
    const uip_ipaddr_t *default_prefix;
  
@@ -103,7 +107,15 @@
    simple_udp_register(&unicast_connection, UDP_PORT,
                        NULL, UDP_PORT, receiver);
  
+   // Added delay to start sending to make sure network is in steady state
+   // and to avoid collisions with other nodes
+   
+   
    etimer_set(&periodic_timer, SEND_INTERVAL);
+   etimer_set(&start_timer, SEND_INTERVAL);
+   PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&start_timer));
+
+
    while(1) {
  
      PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
@@ -134,6 +146,12 @@
           break;
         }
       }
+            
+      
+      if (message_number >= 300) {
+        printf("All messages send: '%s' to ", buf);
+        continue;
+      }
       
       if(my_ip != NULL) {
         uiplib_ipaddr_snprint(ipbuf, sizeof(ipbuf), my_ip);
@@ -142,12 +160,13 @@
         snprintf(buf, sizeof(buf), "Msg unknown %d", message_number);
       }
       
+      
       printf("Sending message: '%s' to ", buf);
       uip_debug_ipaddr_print(&addr);
       printf("\n");
-      
       simple_udp_sendto(&unicast_connection, buf, strlen(buf) + 1, &addr);
-      message_number++;      }
+      message_number++;
+      }
    }
  
    PROCESS_END();
