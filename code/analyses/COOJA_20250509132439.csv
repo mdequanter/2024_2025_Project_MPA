@@ -1,0 +1,9 @@
+batch,timestamp,logfile,sendrate,sender,avg_delay_s,sent,received,success_ratio_percent,throughput_bytes_per_s,not_for_us,avg_hops
+1,20250509132439,code/analyses/logfiles/TSCH_1_1.testlog,1,10,724.0,100,1,1.0,29.01,0,7.0
+1,20250509132439,code/analyses/logfiles/TSCH_1_1.testlog,1,21,389.096,100,1,1.0,61.68,0,5.0
+1,20250509132439,code/analyses/logfiles/TSCH_1_1.testlog,1,22,439.096,100,1,1.0,54.66,0,5.0
+1,20250509132439,code/analyses/logfiles/TSCH_1_1.testlog,1,23,353.096,100,1,1.0,67.97,0,5.0
+1,20250509132439,code/analyses/logfiles/TSCH_1_1.testlog,1,24,447.096,100,1,1.0,53.68,0,5.0
+1,20250509132439,code/analyses/logfiles/TSCH_1_1.testlog,1,26,164.096,100,1,1.0,146.26,0,2.0
+1,20250509132439,code/analyses/logfiles/TSCH_1_1.testlog,1,4,525.0,100,1,1.0,40.0,0,6.0
+1,20250509132439,code/analyses/logfiles/TSCH_1_1.testlog,1,7,494.0,100,1,1.0,42.51,0,5.0

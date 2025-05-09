@@ -45,7 +45,7 @@
  
  //#define SEND_INTERVAL		(60 * CLOCK_SECOND / 10)
  #define SEND_INTERVAL  XXXSEND_INTERVALXXX
- #define START_DELAY		(CLOCK_SECOND*1500)
+ #define START_DELAY		(CLOCK_SECOND*3000)
  #define SEND_TIME		(random_rand() % (SEND_INTERVAL))
 
  static struct simple_udp_connection unicast_connection;

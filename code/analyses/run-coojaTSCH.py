@@ -26,13 +26,13 @@ filename = "code/sender-node.c"
 
 # from 1 to 100, with steps of 10
 
-messageRates = [1] + list(range(1, 6, 1))
-
+#messageRates = [1] + list(range(1, 6, 1))
+messageRates = [1]
 for sendPerMinute in messageRates:
 
 
     # set number of batches per run #  Nu test voor 1 batch.  zet 2 op 31 dan hebben we 30 batches
-    for batch in range(1, 2):
+    for batch in range(1, 5):
 
         search_text = "XXXSEND_INTERVALXXX"
         replace_text = f"(60 * CLOCK_SECOND/{sendPerMinute})"
