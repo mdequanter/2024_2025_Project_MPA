@@ -44,8 +44,8 @@
  #define UDP_PORT 1234
  
  //#define SEND_INTERVAL		(60 * CLOCK_SECOND / 10)
- #define SEND_INTERVAL  (60 * CLOCK_SECOND/1)
- #define START_DELAY		(CLOCK_SECOND*900)
+ #define SEND_INTERVAL  XXXSEND_INTERVALXXX
+ #define START_DELAY		(CLOCK_SECOND*1500)
  #define SEND_TIME		(random_rand() % (SEND_INTERVAL))
 
  static struct simple_udp_connection unicast_connection;
@@ -111,10 +111,13 @@
    // and to avoid collisions with other nodes
    
    
-   etimer_set(&periodic_timer, SEND_INTERVAL);
-   etimer_set(&start_timer, SEND_INTERVAL);
+   etimer_set(&start_timer, START_DELAY);
    PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&start_timer));
 
+   printf("START SENDING TIMER %ld EXPIRED", START_DELAY);
+
+   etimer_set(&periodic_timer, SEND_INTERVAL);
+   
 
    while(1) {
  
@@ -148,7 +151,7 @@
       }
             
       
-      if (message_number >= 300) {
+      if (message_number >= 100) {
         printf("All messages send: '%s' to ", buf);
         continue;
       }

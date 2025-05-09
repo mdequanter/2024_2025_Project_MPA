@@ -12,8 +12,11 @@ recv_bytes = defaultdict(int)
 first_send_time = defaultdict(lambda: float('inf'))
 last_recv_time = defaultdict(lambda: 0)
 sender_hops = defaultdict(list)
+last_association_time = 0
+associated_nodes = {}
 
-with open('code/analyses/COOJA.testlog', 'r') as file:
+
+with open('code/analyses/logfiles/TSCH_1_1.testlog', 'r') as file:
     for line in file:
         # Verstuurd bericht detecteren
         send_match = re.match(r'^(\d+)\s+(\d+)\s+Sending message: \'(.+)\' to fd00::210:10:10:10', line)
@@ -43,6 +46,18 @@ with open('code/analyses/COOJA.testlog', 'r') as file:
                 recv_counts[sender_node] += 1
                 recv_bytes[sender_node] += len(message)
                 last_recv_time[sender_node] = max(last_recv_time[sender_node], time)
+
+        match = re.match(r'^(\d+)\s+(\d+)\s+\[.*?\] Associated with', line)
+        if match:
+            time = int(match.group(1))
+            node = int(match.group(2))
+            print(time)
+
+            associated_nodes[node] = time
+            if time > last_association_time:
+                last_association_time = time
+
+print(f"Laatste TSCH associatie: {last_association_time} ticks")
 
 print("\nSender Node | Avg Delay (s)  | Sent | Received | Success % | Throughput (Bps) | Avg Hops")
 print("------------|----------------|------|----------|-----------|------------------|----------")

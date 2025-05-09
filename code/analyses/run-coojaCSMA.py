@@ -6,7 +6,7 @@ from subprocess import Popen, PIPE, STDOUT, CalledProcessError
 from datetime import datetime
 
 
-saveLogs = False  # Set to True to save the logs, False to delete them
+saveLogs = True  # Set to True to save the logs, False to delete them
 
 timestampbatch = datetime.now().strftime('%Y%m%d%H%M%S')
 
