@@ -1,6 +1,6 @@
 /* A simple log file generator script */
 
-TIMEOUT(14000000); /* 14000 seconds or 2 hours */
+TIMEOUT(XXXtimeoutXXX); /* set timout, so script can run completely */
 
 log.log("Starting COOJA logger\n");
 

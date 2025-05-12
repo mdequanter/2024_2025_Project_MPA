@@ -26,6 +26,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
+
+
+
+
+
+ 
 #define TCPIP_CONF_ANNOTATE_TRANSMISSIONS 1
 #define LOG_CONF_LEVEL_RPL LOG_LEVEL_DBG
 
@@ -36,11 +42,15 @@
 
 //#define TSCH_SCHEDULE_CONF_WITH_ORCHESTRA 1
 
-
-//#define TSCH_QUEUE_CONF_MAX_PACKETS_PER_NEIGHBOR 8
+// changed from 8 to 16,  because we need to send more packets
+//#define TSCH_QUEUE_CONF_MAX_PACKETS_PER_NEIGHBOR 16
 
 // because of RAM memory constraints we cannot put this higher. We assume with 64 that we have 256KB RAM, like a nRF52840
 #define QUEUEBUF_CONF_NUM 64
+
+
+// Lower unicast slotframe lenght (standard  17)
+//#define ORCHESTRA_CONF_UNICAST_PERIOD 7
 
 
 #define LOG_CONF_LEVEL_ORCHESTRA LOG_LEVEL_DBG
