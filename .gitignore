@@ -2,3 +2,5 @@ code/build/
 *.o
 *.csv
 *.testlog
+*.zip
+*.testlog

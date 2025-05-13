@@ -18,28 +18,34 @@ CONTIKI_PATH = os.path.dirname(os.path.dirname(SELF_PATH))
 # COOJA_PATH = os.path.normpath(os.path.join(CONTIKI_PATH, "tools", "cooja"))
 COOJA_PATH = "/home/ubuntu/contiki-ng/tools/cooja"
 
-cooja_input = 'simulation_CSMA_CA_28.csc'
+cooja_input = '/home/ubuntu/Documents/project2_MPA/2024_2025_Project_MPA/code/analyses/simulation_NEW.csc'
 cooja_output = "code/analyses/COOJA.testlog"
-csv_output = f"code/analyses/COOJA_{timestampbatch}.csv"
+csv_output = "code/analyses/CSMA_Analysis.csv"
 filename = "code/sender-node.c"
-
+if (os.path.exists(cooja_output)):
+    os.remove(cooja_output) # remove previous Cooja output
 
 # from 1 to 100, with steps of 10
 
-messageRates = [1] + list(range(10, 101, 10))
+#messageRates = [1] + list(range(1, 6, 1))
+#messageRates = [60,65,70,75]
+messageRates = [1,2,5,8,10,15,20]
+messageRates = [1,1.5]
 
-for sendPerMinute in messageRates:
+for sendNumbers in messageRates:
 
 
-    # set number of batches per run
-    for batch in range(1, 31):
+    # set number of batches per run #  Nu test voor 1 batch.  zet 2 op 31 dan hebben we 30 batches
+    for batch in range(1,2):
 
         search_text = "XXXSEND_INTERVALXXX"
-        replace_text = f"(60 * CLOCK_SECOND/{sendPerMinute})"
+        replace_text = f'(({sendNumbers} * CLOCK_SECOND))'
         print (replace_text)
-        sendrate = sendPerMinute   # 1 message per minute
+        sendrate = sendNumbers   # 1 message per minute
 
         logfile = f"code/analyses/logfiles/CSMA_{sendrate}_{batch}.testlog"
+
+        print (f"Processing batch {batch} with  sendrate : {sendrate}")
 
         # Read the file content
         with open(filename, "r") as file:
@@ -54,6 +60,18 @@ for sendPerMinute in messageRates:
 
 
 
+        # Read the file content
+        with open("code/analyses/coojalogger.js", "r") as file2:
+            content = file2.read()
+
+        # Replace the text
+        replaceTimout = str(int(15000000*(sendNumbers/60)))
+        print (replaceTimout)
+        content = content.replace('XXXtimeoutXXX', replaceTimout)
+
+        # Write the updated content back to the same file
+        with open("code/analyses/coojalogger.js", "w") as file2:
+            file2.write(content)
         #######################################################
         # Run a child process and get its output
 
@@ -305,3 +323,12 @@ for sendPerMinute in messageRates:
             file.write(content)
 
 
+
+        with open("code/analyses/coojalogger.js", "r") as file2:
+            content = file2.read()   
+
+        # Replace the text
+        content = content.replace(replaceTimout,'XXXtimeoutXXX')
+
+        with open("code/analyses/coojalogger.js", "w") as file2:
+            file2.write(content)

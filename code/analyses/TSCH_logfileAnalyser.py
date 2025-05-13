@@ -142,11 +142,15 @@ if num_senders > 0:
           f"{(total_received/total_confirmed*100):9.1f}% | {total_throughput/num_senders:16.2f} | "
           f"{total_avg_hops/num_senders:.2f} | {'-'*6} | {'-'*11} | {'-'*11}")
 
+
+'''
+
+
 # === CSV Export ===
 csv_path = os.path.splitext(input_path)[0] + ".csv"
 timestampbatch = datetime.now().strftime('%Y%m%d%H%M%S')
 
-with open(csv_path, 'w', newline='') as csvfile:
+with open(csv_path, 'a', newline='') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow(["Timestamp", "Logfile", "Sender Node", "Avg Delay (ms)", "Sent", "Confirmed Sent",
                      "Received", "Success %", "Throughput (Bps)", "Avg Hops", "Lines", "Queue Full", "TSCH Sends"])
@@ -177,3 +181,4 @@ with open(csv_path, 'w', newline='') as csvfile:
         ])
 
 print(f"\n✅ CSV saved to: {csv_path}")
+'''

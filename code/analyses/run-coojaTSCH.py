@@ -29,13 +29,13 @@ if (os.path.exists(cooja_output)):
 
 #messageRates = [1] + list(range(1, 6, 1))
 #messageRates = [60,65,70,75]
-messageRates = [60]
+messageRates = [1,2,5,8,10,15,20]
 
 for sendNumbers in messageRates:
 
 
     # set number of batches per run #  Nu test voor 1 batch.  zet 2 op 31 dan hebben we 30 batches
-    for batch in range(33,34):
+    for batch in range(10,25):
 
         search_text = "XXXSEND_INTERVALXXX"
         replace_text = f'(({sendNumbers} * CLOCK_SECOND))'
@@ -43,6 +43,8 @@ for sendNumbers in messageRates:
         sendrate = sendNumbers   # 1 message per minute
 
         logfile = f"code/analyses/logfiles/TSCH_{sendrate}_{batch}.testlog"
+
+        print (f"Processing batch {batch} with  sendrate : {sendrate}")
 
         # Read the file content
         with open(filename, "r") as file:
@@ -61,7 +63,7 @@ for sendNumbers in messageRates:
             content = file2.read()
 
         # Replace the text
-        replaceTimout = str(int(9000000*(sendNumbers/60)))
+        replaceTimout = str(int(15000000*(sendNumbers/60)))
         print (replaceTimout)
         content = content.replace('XXXtimeoutXXX', replaceTimout)
 
@@ -124,6 +126,7 @@ for sendNumbers in messageRates:
 
             with open(cooja_output, "r") as f:
                 for line in f.readlines():
+                    # print (line)
                     line = line.strip()
                     if line == "TEST OK":
                         sys.stdout.write(" done.\n")

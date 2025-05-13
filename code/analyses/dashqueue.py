@@ -93,11 +93,11 @@ def update_graph(n):
 
     records = []
     for minute in all_minutes:
-        avg_q1 = sum(queue1_per_minute[minute]) / len(queue1_per_minute[minute]) if queue1_per_minute[minute] else 0
-        avg_q2 = sum(queue2_per_minute[minute]) / len(queue2_per_minute[minute]) if queue2_per_minute[minute] else 0
+        #avg_q1 = sum(queue1_per_minute[minute]) / len(queue1_per_minute[minute]) if queue1_per_minute[minute] else 0
+        #avg_q2 = sum(queue2_per_minute[minute]) / len(queue2_per_minute[minute]) if queue2_per_minute[minute] else 0
         received = recv_per_minute.get(minute, 0)
-        #avg_q1 = max(queue1_per_minute[minute]) if queue1_per_minute[minute] else 0
-        #avg_q2 = max(queue2_per_minute[minute]) if queue2_per_minute[minute] else 0
+        avg_q1 = max(queue1_per_minute[minute]) if queue1_per_minute[minute] else 0
+        avg_q2 = max(queue2_per_minute[minute]) if queue2_per_minute[minute] else 0
         confirmed = len(confirmed_sent_per_minute.get(minute, set())) / num_senders
         avg_sent = avg_sent_per_minute.get(minute, 0)
 

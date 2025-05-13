@@ -1,5 +1,6 @@
 import re
 from collections import defaultdict
+import argparse
 
 # Define expected nodes (e.g. node IDs from 1 to 20)
 expected_nodes = [str(n) for n in range(1, 21)]
@@ -13,7 +14,15 @@ first_tick_seen = defaultdict(lambda: float('inf'))
 # Tick when the full network is considered built
 network_built_tick = None
 
-with open("code/analyses/COOJA.testlog") as file:
+# === Configuration ===
+parser = argparse.ArgumentParser(description="Parse COOJA test log.")
+parser.add_argument("input_path", help="Path to the COOJA log file")
+args = parser.parse_args()
+
+logfile = args.input_path
+
+# === Log parsing ===
+with open(logfile) as file:
     for line in file:
         # Extract timestamp at the start of the line
         timestamp_match = re.match(r'^(\d+)', line)
@@ -35,7 +44,7 @@ with open("code/analyses/COOJA.testlog") as file:
                 has_parent[node] = True
                 first_tick_seen[node] = min(first_tick_seen[node], tick)
 
-        # After each line, check if the full network is built
+        # Check if full network is built
         all_ready = True
         for n in expected_nodes:
             if n == root_node:
@@ -50,13 +59,16 @@ with open("code/analyses/COOJA.testlog") as file:
         if all_ready and network_built_tick is None:
             network_built_tick = tick
 
-# Output per node
+# === Output per node ===
 print("Network status per node:")
 for node in sorted(expected_nodes, key=int):
-    print(f"Node {node}: rank={'✓' if has_rank[node] else '✗'} | parent={'-' if node == root_node else ('✓' if has_parent[node] else '✗')} | first seen at tick {first_tick_seen[node] if first_tick_seen[node] < float('inf') else 'n/a'}")
+    tick_value = first_tick_seen[node]
+    second_value = tick_value / 1_000_000 if tick_value < float('inf') else 'n/a'
+    print(f"Node {node}: rank={'✓' if has_rank[node] else '✗'} | parent={'-' if node == root_node else ('✓' if has_parent[node] else '✗')} | first seen at second {second_value}")
 
-# Final result
+# === Final result ===
 if network_built_tick:
-    print(f"\n✅ Network fully built at tick: {network_built_tick}")
+    built_sec = network_built_tick / 1_000_000
+    print(f"\n✅ Network fully built at second: {built_sec:.2f}")
 else:
     print("\n❌ Network was not fully built in the log file.")
