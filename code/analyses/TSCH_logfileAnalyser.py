@@ -108,7 +108,7 @@ for i, line in enumerate(lines):
         last_association_time = max(last_association_time, time)
 
 # === Summary Output ===
-print("\nSender Node | Avg Delay (ms) | Sent | Confirmed | Received | Success % | Throughput (Bps) | Avg Hops | Lines | Queue Full | TSCH Sends")
+print("\nSender Node | End-to-End latency(ms)  | Sent | Confirmed | Received | Throughput % | Sendrate (Bps) | Avg Hops | Lines | Queue Full | TSCH Sends")
 print("------------|----------------|------|-----------|----------|-----------|------------------|----------|--------|-------------|-------------")
 
 total_sent = total_confirmed = total_received = total_delay = total_avg_hops = total_throughput = 0
@@ -119,7 +119,7 @@ for sender in sorted(sender_nodes):
     confirmed = confirmed_sent_counts[sender]
     received = recv_counts[sender]
     ratio = (received / confirmed * 100) if confirmed > 0 else 0
-    avg_delay = sum(sender_delays[sender]) / received if received > 0 else 0
+    avg_delay = sum(sender_delays[sender]) / (received * 1000) if received > 0 else 0
     avg_hops = sum(sender_hops[sender]) / received if received > 0 else 0
     time_span = (last_recv_time[sender] - first_send_time[sender]) / 1000
     throughput = (recv_bytes[sender] / (time_span / 1000)) if time_span > 0 else 0
@@ -141,44 +141,3 @@ if num_senders > 0:
           f"{total_sent//num_senders:4} | {total_confirmed//num_senders:9} | {total_received//num_senders:8} | "
           f"{(total_received/total_confirmed*100):9.1f}% | {total_throughput/num_senders:16.2f} | "
           f"{total_avg_hops/num_senders:.2f} | {'-'*6} | {'-'*11} | {'-'*11}")
-
-
-'''
-
-
-# === CSV Export ===
-csv_path = os.path.splitext(input_path)[0] + ".csv"
-timestampbatch = datetime.now().strftime('%Y%m%d%H%M%S')
-
-with open(csv_path, 'a', newline='') as csvfile:
-    writer = csv.writer(csvfile)
-    writer.writerow(["Timestamp", "Logfile", "Sender Node", "Avg Delay (ms)", "Sent", "Confirmed Sent",
-                     "Received", "Success %", "Throughput (Bps)", "Avg Hops", "Lines", "Queue Full", "TSCH Sends"])
-    for sender in sorted(sender_nodes):
-        sent = sent_counts[sender]
-        confirmed = confirmed_sent_counts[sender]
-        received = recv_counts[sender]
-        ratio = (received / confirmed * 100) if confirmed > 0 else 0
-        avg_delay = sum(sender_delays[sender]) / received if received > 0 else 0
-        avg_hops = sum(sender_hops[sender]) / received if received > 0 else 0
-        time_span = (last_recv_time[sender] - first_send_time[sender]) / 1000
-        throughput = (recv_bytes[sender] / (time_span / 1000)) if time_span > 0 else 0
-
-        writer.writerow([
-            timestampbatch,
-            os.path.basename(input_path),
-            sender,
-            round(avg_delay, 2),
-            sent,
-            confirmed,
-            received,
-            round(ratio, 1),
-            round(throughput, 2),
-            round(avg_hops, 2),
-            line_counts[sender],
-            queue_full_counts[sender],
-            tsch_send_counts[sender]
-        ])
-
-print(f"\n✅ CSV saved to: {csv_path}")
-'''
