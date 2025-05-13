@@ -141,3 +141,4 @@ if num_senders > 0:
           f"{total_sent//num_senders:4} | {total_confirmed//num_senders:9} | {total_received//num_senders:8} | "
           f"{(total_received/total_confirmed*100):9.1f}% | {total_throughput/num_senders:16.2f} | "
           f"{total_avg_hops/num_senders:.2f} | {'-'*6} | {'-'*11} | {'-'*11}")
+
