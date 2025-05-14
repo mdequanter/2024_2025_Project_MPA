@@ -49,6 +49,13 @@
 #define QUEUEBUF_CONF_NUM 64
 
 
+// Set minimum backoff exponent (default = 3)
+//#define TSCH_MAC_MIN_BE 2
+
+// Set maximum backoff exponent (default = 5)
+//#define TSCH_MAC_MAX_BE 6
+
+
 // Lower unicast slotframe lenght (standard  17)
 //#define ORCHESTRA_CONF_UNICAST_PERIOD 7
 

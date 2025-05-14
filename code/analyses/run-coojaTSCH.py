@@ -29,13 +29,13 @@ if (os.path.exists(cooja_output)):
 
 #messageRates = [1] + list(range(1, 6, 1))
 #messageRates = [60,65,70,75]
-messageRates = [1,2,5,8,10,15,20]
+messageRates = [10]
 
 for sendNumbers in messageRates:
 
 
     # set number of batches per run #  Nu test voor 1 batch.  zet 2 op 31 dan hebben we 30 batches
-    for batch in range(10,25):
+    for batch in range(50,51):
 
         search_text = "XXXSEND_INTERVALXXX"
         replace_text = f'(({sendNumbers} * CLOCK_SECOND))'
