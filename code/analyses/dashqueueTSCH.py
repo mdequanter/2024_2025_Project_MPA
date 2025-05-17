@@ -82,9 +82,10 @@ for line in lines:
     if "DIO Timer interval doubled" in line:
         resets_per_minute[minute] += 1
 
-# === Compute data ===
+# === Compute summary stats ===
 success_rate = (total_received_messages / total_sent_messages * 100) if total_sent_messages > 0 else 0
 total_resets = sum(resets_per_minute.values())
+total_confirmed_sent = sum(len(v) for v in confirmed_sent_per_minute.values())
 
 all_minutes = sorted(set(queue1_per_minute) |
                      set(queue2_per_minute) |
@@ -128,10 +129,10 @@ fig.add_trace(go.Scatter(x=df["Minute"], y=df["Avg Latency (s)"], mode="lines+ma
 fig.add_trace(go.Scatter(x=df["Minute"], y=df["Trickle Resets"], mode="lines+markers", name="Trickle Resets (DIO doubled)", line=dict(dash="solid"), yaxis="y2"))
 
 fig.update_layout(
-    title=f"TSCH Queue, Latency, Reception & Trickle Resets per Minute ({logfile})",
+    title=f"TSCH analyser ({logfile})",
     xaxis=dict(title="Time (minutes)"),
     yaxis=dict(title=f"Avg Queue Fill (0–{queue})", side="left"),
-    yaxis2=dict(title="Messages / Minute, Latency & Trickle Resets", overlaying="y", side="right"),
+    yaxis2=dict(title="Msg/Min, Latency & Trickle Resets", overlaying="y", side="right"),
     legend_title_text="Legend",
     template="plotly_white",
     height=700,
@@ -142,9 +143,10 @@ fig.update_layout(
             xanchor='left', yanchor='bottom',
             text=(
                 f"📦 Sent: <b>{total_sent_messages}</b> | "
-                f"✅ Received: <b>{total_received_messages}</b> | "
+                f"✅ Confirmed: <b>{total_confirmed_sent}</b> | "
+                f"📥 Received: <b>{total_received_messages}</b> | "
                 f"📈 Success rate: <b>{success_rate:.1f}%</b> | "
-                f"🔄 Tricke Resets(DIO timer doubled): <b>{total_resets}</b>"
+                f"🔄 Trickle Resets (DIO timer doubled): <b>{total_resets}</b>"
             ),
             showarrow=False,
             font=dict(size=14)

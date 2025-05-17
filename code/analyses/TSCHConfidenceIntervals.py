@@ -8,7 +8,8 @@ df = pd.read_csv("code/analyses/tsch_summary_means.csv")
 df["Timing"] = df["File"].str.extract(r"TSCH_(\d+)_")[0].astype(int)
 
 # Compute messages per minute
-df["Msgs/min"] = (60 / df["Timing"]).round(2)
+df["Msgs/min"] = (60 / df["Timing"]).round(0)
+
 
 # === Compute confidence intervals ===
 def compute_ci(series):

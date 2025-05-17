@@ -2,190 +2,187 @@
 
 import sys
 import os
+import re
+import csv
 from subprocess import Popen, PIPE, STDOUT, CalledProcessError
 from datetime import datetime
+from collections import defaultdict
 
-
-saveLogs = True  # Set to True to save the logs, False to delete them
+saveLogs = False  # Set to True to save the logs, False to delete them
+saveCsv = False   # Set to True to save CSV results, False to skip writing CSV
 
 timestampbatch = datetime.now().strftime('%Y%m%d%H%M%S')
 
-# get the path of this example
 SELF_PATH = os.path.dirname(os.path.abspath(__file__))
-# move three levels up
 CONTIKI_PATH = os.path.dirname(os.path.dirname(SELF_PATH))
-
-# COOJA_PATH = os.path.normpath(os.path.join(CONTIKI_PATH, "tools", "cooja"))
 COOJA_PATH = "/home/ubuntu/contiki-ng/tools/cooja"
 
 cooja_input = '/home/ubuntu/Documents/project2_MPA/2024_2025_Project_MPA/code/analyses/simulation_NEW.csc'
 cooja_output = "code/analyses/COOJA.testlog"
 filename = "code/sender-node.c"
 
-if (os.path.exists(cooja_output)):
-    os.remove(cooja_output) # remove previous Cooja output
+csv_output = "code/analyses/tsch_summary_means.csv"
+sender_nodes = [str(n) for n in [10, 11, 19, 2, 20, 21, 22, 23, 24, 25, 26, 27, 28, 3, 4, 5, 6, 7, 8, 9]]
 
-# from 1 to 100, with steps of 10
+if saveCsv:
+    if not os.path.exists(os.path.dirname(csv_output)):
+        os.makedirs(os.path.dirname(csv_output))
 
-#messageRates = [1] + list(range(1, 6, 1))
-#messageRates = [60,65,70,75]
-messageRates = [10]
+    if not os.path.exists(csv_output):
+        with open(csv_output, mode='w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=[
+                "File", "End-to-End latency(ms)", "Sent", "Confirmed", "Received", "Throughput %", "Sendrate (Bps)"
+            ])
+            writer.writeheader()
+
+if os.path.exists(cooja_output):
+    os.remove(cooja_output)
+
+messageRates = [5]
 
 for sendNumbers in messageRates:
-
-
-    # set number of batches per run #  Nu test voor 1 batch.  zet 2 op 31 dan hebben we 30 batches
-    for batch in range(50,51):
+    for batch in range(200, 201):
 
         search_text = "XXXSEND_INTERVALXXX"
         replace_text = f'(({sendNumbers} * CLOCK_SECOND))'
-        print (replace_text)
-        sendrate = sendNumbers   # 1 message per minute
+        sendrate = sendNumbers
 
         logfile = f"code/analyses/logfiles/TSCH_{sendrate}_{batch}.testlog"
 
-        print (f"Processing batch {batch} with  sendrate : {sendrate}")
-
-        # Read the file content
         with open(filename, "r") as file:
-            content = file.read()
-
-        # Replace the text
-        content = content.replace(search_text, replace_text)
-
-        # Write the updated content back to the same file
+            content = file.read().replace(search_text, replace_text)
         with open(filename, "w") as file:
             file.write(content)
 
-
-        # Read the file content
-        with open("code/analyses/coojalogger.js", "r") as file2:
-            content = file2.read()
-
-        # Replace the text
-        replaceTimout = str(int(15000000*(sendNumbers/60)))
-        print (replaceTimout)
-        content = content.replace('XXXtimeoutXXX', replaceTimout)
-
-        # Write the updated content back to the same file
-        with open("code/analyses/coojalogger.js", "w") as file2:
-            file2.write(content)
-
-
-
-        #######################################################
-        # Run a child process and get its output
+        with open("code/analyses/coojalogger.js", "r") as file:
+            content = file.read()
+        replaceTimout = str(int(150000000 * (sendNumbers / 60)))
+        with open("code/analyses/coojalogger.js", "w") as file:
+            file.write(content.replace('XXXtimeoutXXX', replaceTimout))
 
         def run_subprocess(args, input_string):
-            retcode = -1
-            stdoutdata = ''
             try:
                 proc = Popen(args, stdout=PIPE, stderr=STDOUT, stdin=PIPE, shell=True, universal_newlines=True)
-                (stdoutdata, stderrdata) = proc.communicate(input_string)
-                if not stdoutdata:
-                    stdoutdata = '\n'
-                if stderrdata:
-                    stdoutdata += stderrdata + '\n'
-                retcode = proc.returncode
-            except OSError as e:
-                sys.stderr.write("run_subprocess OSError:" + str(e))
-            except CalledProcessError as e:
-                sys.stderr.write("run_subprocess CalledProcessError:" + str(e))
-                retcode = e.returncode
+                stdoutdata, stderrdata = proc.communicate(input_string)
+                return proc.returncode, stdoutdata + (stderrdata or '')
             except Exception as e:
-                sys.stderr.write("run_subprocess exception:" + str(e))
-            finally:
-                return (retcode, stdoutdata)
-
-        #############################################################
-        # Run a single instance of Cooja on a given simulation script
+                return -1, str(e)
 
         def execute_test(cooja_file):
-            # cleanup
             try:
                 os.remove(cooja_output)
-            except FileNotFoundError as ex:
+            except FileNotFoundError:
                 pass
-            except PermissionError as ex:
-                print("Cannot remove previous Cooja output:", ex)
-                return False
-
             filename = os.path.join(SELF_PATH, cooja_file)
-            args = " ".join([COOJA_PATH + "/gradlew --no-watch-fs --parallel --build-cache -p", COOJA_PATH, "run --args='--contiki=" + CONTIKI_PATH, "--no-gui", "--logdir=" + SELF_PATH, filename + "'"])
-            sys.stdout.write("  Running Cooja, args={}\n".format(args))
-
-            (retcode, output) = run_subprocess(args, '')
+            args = f"{COOJA_PATH}/gradlew --no-watch-fs --parallel --build-cache -p {COOJA_PATH} run --args='--contiki={CONTIKI_PATH} --no-gui --logdir={SELF_PATH} {filename}'"
+            print(f"  Running Cooja, args={args}")
+            retcode, output = run_subprocess(args, '')
             if retcode != 0:
-                sys.stderr.write("Failed, retcode=" + str(retcode) + ", output:")
-                sys.stderr.write(output)
+                print("Failed:", output)
                 return False
-
-            sys.stdout.write("  Checking for output...")
-
-            is_done = False
-
             with open(cooja_output, "r") as f:
-                for line in f.readlines():
-                    # print (line)
-                    line = line.strip()
-                    if line == "TEST OK":
-                        sys.stdout.write(" done.\n")
-                        is_done = True
-                        continue
-
-            if not is_done:
-                sys.stdout.write("  test failed.\n")
-                return False
-
-            sys.stdout.write(" test done\n")
-            return True
-
-        #######################################################
-        # Run the application
-
-        def main():
-            input_file = cooja_input
-            if len(sys.argv) > 1:
-                # change from the default
-                input_file = sys.argv[1]
-
-            if not os.access(input_file, os.R_OK):
-                print('Simulation script "{}" does not exist'.format(input_file))
-                exit(-1)
-
-            print('Using simulation script "{}"'.format(input_file))
-            if not execute_test(input_file):
-                exit(-1)
-
-        #######################################################
+                return any("TEST OK" in line for line in f)
 
         if __name__ == '__main__':
-            main()
+            if not execute_test(cooja_input):
+                exit(-1)
 
 
-
-        if (saveLogs == True):
-            os.rename(cooja_output, logfile)
-        else:
-            os.remove(cooja_output)
-        # Read the file content
+        # Revert changes
         with open(filename, "r") as file:
-            content = file.read()   
-
-        # Replace the text
-        content = content.replace(replace_text,search_text)
-
-        # Write the updated content back to the same file
+            content = file.read().replace(replace_text, search_text)
         with open(filename, "w") as file:
             file.write(content)
 
-        
-        with open("code/analyses/coojalogger.js", "r") as file2:
-            content = file2.read()   
+        with open("code/analyses/coojalogger.js", "r") as file:
+            content = file.read().replace(replaceTimout, 'XXXtimeoutXXX')
+        with open("code/analyses/coojalogger.js", "w") as file:
+            file.write(content)
 
-        # Replace the text
-        content = content.replace(replaceTimout,'XXXtimeoutXXX')
+        if saveCsv == True:
 
-        with open("code/analyses/coojalogger.js", "w") as file2:
-            file2.write(content)
-    
+            print("=== Extracting results ===")
+
+            # === Extract results and append to CSV ===
+            try:
+                with open(cooja_output, 'r') as file:
+                    lines = list(file)
+            except:
+                continue
+
+            sent_messages = {}
+            sender_delays = defaultdict(list)
+            sent_counts = defaultdict(int)
+            confirmed_sent_counts = defaultdict(int)
+            recv_counts = defaultdict(int)
+            recv_bytes = defaultdict(int)
+            first_send_time = defaultdict(lambda: float('inf'))
+            last_recv_time = defaultdict(lambda: 0)
+
+            print (f"{cooja_output} loaded successfully")
+
+            for i, line in enumerate(lines):
+                send_match = re.match(r'^(\d+)\s+(\d+)\s+Sending message: \'(.+?)\' to fd00::210:10:10:10', line)
+                if send_match:
+                    time, sender_node, message = int(send_match.group(1)), send_match.group(2), send_match.group(3).strip()
+                    if sender_node in sender_nodes:
+                        sent_counts[sender_node] += 1
+                        sent_messages[message] = (time, sender_node)
+                        first_send_time[sender_node] = min(first_send_time[sender_node], time)
+                        for followup in lines[i+1:i+11]:
+                            tsch_match = re.match(r'^\d+\s+' + sender_node + r'\s+\[INFO: TSCH\s+\] send packet to .*', followup)
+                            if tsch_match:
+                                confirmed_sent_counts[sender_node] += 1
+                                break
+
+                recv_match = re.match(r'^(\d+)\s+16\s+Data received from .*? in \d+ hops with datalength \d+: \'(.+?)\'', line)
+                if recv_match:
+                    time, message = int(recv_match.group(1)), recv_match.group(2).strip()
+                    if message in sent_messages:
+                        send_time, sender_node = sent_messages[message]
+                        if sender_node in sender_nodes:
+                            delay = time - send_time
+                            sender_delays[sender_node].append(delay)
+                            recv_counts[sender_node] += 1
+                            recv_bytes[sender_node] += len(message)
+                            last_recv_time[sender_node] = max(last_recv_time[sender_node], time)
+
+            total_sent = total_confirmed = total_received = total_delay = total_throughput = 0
+            num_senders = 0
+
+            for sender in sender_nodes:
+                sent = sent_counts[sender]
+                confirmed = confirmed_sent_counts[sender]
+                received = recv_counts[sender]
+
+                if confirmed > 0 and received > 0:
+                    avg_delay = sum(sender_delays[sender]) / (received * 1000)
+                    time_span = (last_recv_time[sender] - first_send_time[sender]) / 1000
+                    throughput = (recv_bytes[sender] / (time_span / 1000)) if time_span > 0 else 0
+                    total_sent += sent
+                    total_confirmed += confirmed
+                    total_received += received
+                    total_delay += avg_delay
+                    total_throughput += throughput
+                    num_senders += 1
+
+            if num_senders > 0 and total_confirmed > 0:
+                with open(csv_output, mode='a', newline='') as csvfile:
+                    writer = csv.DictWriter(csvfile, fieldnames=[
+                        "File", "End-to-End latency(ms)", "Sent", "Confirmed", "Received", "Throughput %", "Sendrate (Bps)"
+                    ])
+                    writer.writerow({
+                        "File": os.path.basename(logfile),
+                        "End-to-End latency(ms)": round(total_delay / num_senders, 2),
+                        "Sent": total_sent // num_senders,
+                        "Confirmed": total_confirmed // num_senders,
+                        "Received": total_received // num_senders,
+                        "Throughput %": round((total_received / total_confirmed) * 100, 2),
+                        "Sendrate (Bps)": round(total_throughput / num_senders, 2)
+                    })
+
+
+        if saveLogs == True:
+            os.rename(cooja_output, logfile)
+        #else:
+            #os.remove(cooja_output)

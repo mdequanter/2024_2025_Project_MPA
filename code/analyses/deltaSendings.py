@@ -1,6 +1,6 @@
 import re
 
-logfile = "code/analyses/logfiles/TSCH_80_1.testlog"  # ← replace with your actual filename
+logfile = "code/analyses/logfiles/TSCH_20_1.testlog"  # ← replace with your actual filename
 send_times = []
 
 node = 6  # Node ID to analyze

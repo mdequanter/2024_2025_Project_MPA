@@ -8,7 +8,7 @@ df = pd.read_csv("code/analyses/csma_summary_means.csv")
 df["Timing"] = df["File"].str.extract(r"CSMA_([\d\.]+)_")[0].astype(float)
 
 # Compute messages per minute
-df["Msgs/min"] = (60 / df["Timing"]).round(2)  # E.g. 0.1 → 600 msgs/min
+df["Msgs/min"] = (60 / df["Timing"]).round(0)  # E.g. 0.1 → 600 msgs/min
 
 # === Compute confidence intervals ===
 def compute_ci(series):

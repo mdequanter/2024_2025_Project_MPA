@@ -14,7 +14,7 @@ logfile = args.input_path
 
 # === CONFIG ===
 queue_size = 64
-included_nodes = {'3', '6', '16', '25', '26'}
+included_nodes = {'3', '6', '25', '26'}
 fixed_colors = {
     '3': 'blue',
     '6': 'red',
@@ -68,14 +68,15 @@ for node in sorted(included_nodes):
         q1_minutes = sorted(queue_q1[node].keys())
         q1_avg = [sum(queue_q1[node][m])/len(queue_q1[node][m]) for m in q1_minutes]
         fig.add_trace(go.Scatter(x=q1_minutes, y=q1_avg,
-                                 mode="lines+markers", name=f"Node {node} Q1",
+        
+                                 mode="lines+markers", name=f"Q{node}",
                                  line=dict(color=fixed_colors[node], dash="solid"), yaxis="y1"))
     if node in queue_q2:
         q2_minutes = sorted(queue_q2[node].keys())
         q2_avg = [sum(queue_q2[node][m])/len(queue_q2[node][m]) for m in q2_minutes]
-        fig.add_trace(go.Scatter(x=q2_minutes, y=q2_avg,
-                                 mode="lines+markers", name=f"Node {node} Q2",
-                                 line=dict(color=fixed_colors[node], dash="dot"), yaxis="y1"))
+        #fig.add_trace(go.Scatter(x=q2_minutes, y=q2_avg,
+        #                         mode="lines+markers", name=f"{node} Q2",
+        #                         line=dict(color=fixed_colors[node], dash="dot"), yaxis="y1"))
 
 # Received trace
 recv_df = pd.DataFrame({
@@ -83,23 +84,23 @@ recv_df = pd.DataFrame({
     "Received": list(recv_per_minute.values())
 }).sort_values("Minute")
 fig.add_trace(go.Scatter(x=recv_df["Minute"], y=recv_df["Received"],
-                         mode="lines+markers", name="Messages Received (Node 16)",
+                         mode="lines+markers", name="Msg.Received",
                          line=dict(color=fixed_colors["received"], width=3), yaxis="y2"))
 
 # === LAYOUT ===
 success = (total_received / total_sent * 100) if total_sent > 0 else 0
 fig.update_layout(
-    title="Queue Fill (Q1/Q2) for Selected Nodes + Received Messages",
+    title=f"Queue Fills for Selected Nodes + Received Messages({logfile})",
     xaxis=dict(title="Time (minutes)"),
-    yaxis=dict(title=f"Queue Fill (0–{queue_size})", side="left"),
-    yaxis2=dict(title="Messages Received", overlaying="y", side="right"),
+    yaxis=dict(title=f"Queue Fill 16–{queue_size})", side="left"),
+    yaxis2=dict(title="Messages", overlaying="y", side="right"),
     legend_title_text="Legend",
     template="plotly_white",
     height=700,
     annotations=[
         dict(
             xref='paper', yref='paper',
-            x=0.1, y=1.1,
+            x=0.01, y=1.05,
             xanchor='left', yanchor='top',
             text=f"📦 Sent: {total_sent} | ✅ Received: {total_received} | 📈 Success rate: {success:.1f}%",
             showarrow=False,

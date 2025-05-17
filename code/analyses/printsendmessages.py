@@ -4,9 +4,7 @@ import plotly.express as px
 from collections import defaultdict
 import argparse
 
-
 # === Configuration ===
-
 parser = argparse.ArgumentParser(description="Parse COOJA test log.")
 parser.add_argument("input_path", help="Path to the COOJA log file")
 args = parser.parse_args()
@@ -46,6 +44,13 @@ for minute in range(max_minute + 1):
 
 df = pd.DataFrame(records)
 
+# === Sort to ensure proper line rendering ===
+df = df.sort_values(by=["Node", "Minute"])
+
+# === Ensure categorical node sorting for consistent plot order ===
+df["Node"] = pd.Categorical(df["Node"], ordered=True,
+                            categories=[str(n) for n in sender_nodes] + ["Total"])
+
 # === Plot ===
 fig = px.line(
     df,
@@ -54,7 +59,8 @@ fig = px.line(
     color="Node",
     title="Messages Sent per Minute per Node (with Total)",
     labels={"Minute": "Time (minutes)", "Messages Sent": "Messages Sent"},
-    line_group="Node"
+    line_group="Node",
+    markers=True  # Add markers to ensure even sparse data is visible
 )
 
 # Make "Total" line black and bold

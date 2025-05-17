@@ -43,7 +43,7 @@
 //#define TSCH_SCHEDULE_CONF_WITH_ORCHESTRA 1
 
 // changed from 8 to 16,  because we need to send more packets
-//#define TSCH_QUEUE_CONF_MAX_PACKETS_PER_NEIGHBOR 16
+#define TSCH_QUEUE_CONF_MAX_PACKETS_PER_NEIGHBOR 16
 
 // because of RAM memory constraints we cannot put this higher. We assume with 64 that we have 256KB RAM, like a nRF52840
 #define QUEUEBUF_CONF_NUM 64
