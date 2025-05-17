@@ -9,6 +9,7 @@ df["Timing"] = df["File"].str.extract(r"TSCH_(\d+)_")[0].astype(int)
 
 # Compute messages per minute
 df["Msgs/min"] = (60 / df["Timing"]).round(0)
+df["Msgs/min"] = df["Timing"]
 
 
 # === Compute confidence intervals ===
@@ -44,9 +45,9 @@ fig = make_subplots(
     shared_xaxes=True,
     vertical_spacing=0.12,
     subplot_titles=[
-        "End-to-End Latency per Send Rate (msgs/min)",
-        "Throughput (%) per Send Rate (msgs/min)",
-        "Bitrate (bits/s) per Send Rate (msgs/min)"
+        "End-to-End Latency per Send Rate",
+        "Throughput (%) per Send Rate",
+        "Bitrate (bits/s) per Send Rate"
     ]
 )
 
@@ -88,7 +89,7 @@ fig.update_layout(
 )
 
 # === Axis formatting ===
-fig.update_xaxes(title_text="Send Rate (messages/min)", type="category", row=3, col=1, title_font=dict(size=18), tickfont=dict(size=14))
+fig.update_xaxes(title_text="Send Rate", type="category", row=3, col=1, title_font=dict(size=18), tickfont=dict(size=14))
 fig.update_yaxes(title_text="Latency (ms)", tickformat=".2f", row=1, col=1, title_font=dict(size=18), tickfont=dict(size=14))
 fig.update_yaxes(title_text="PDR (%)", tickformat=".2f", row=2, col=1, title_font=dict(size=18), tickfont=dict(size=14))
 fig.update_yaxes(title_text="Troughput (bits/s)", tickformat=".2f", row=3, col=1, title_font=dict(size=18), tickfont=dict(size=14))
