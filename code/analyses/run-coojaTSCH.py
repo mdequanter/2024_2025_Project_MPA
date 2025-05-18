@@ -9,7 +9,7 @@ from datetime import datetime
 from collections import defaultdict
 
 saveLogs = False  # Set to True to save the logs, False to delete them
-saveCsv = False   # Set to True to save CSV results, False to skip writing CSV
+saveCsv = True   # Set to True to save CSV results, False to skip writing CSV
 
 timestampbatch = datetime.now().strftime('%Y%m%d%H%M%S')
 
@@ -38,16 +38,18 @@ if saveCsv:
 if os.path.exists(cooja_output):
     os.remove(cooja_output)
 
-messageRates = [5]
+messageRates = [20,15,10,8,5,1]
 
 for sendNumbers in messageRates:
-    for batch in range(200, 201):
+    for batch in range(6,30):
 
         search_text = "XXXSEND_INTERVALXXX"
         replace_text = f'(({sendNumbers} * CLOCK_SECOND))'
         sendrate = sendNumbers
 
         logfile = f"code/analyses/logfiles/TSCH_{sendrate}_{batch}.testlog"
+        print(f"Starting batch {batch} with sendrate {sendrate}...")
+
 
         with open(filename, "r") as file:
             content = file.read().replace(search_text, replace_text)
@@ -171,6 +173,7 @@ for sendNumbers in messageRates:
                     writer = csv.DictWriter(csvfile, fieldnames=[
                         "File", "End-to-End latency(ms)", "Sent", "Confirmed", "Received", "Throughput %", "Sendrate (Bps)"
                     ])
+                    print(f"Writing to {csv_output}")
                     writer.writerow({
                         "File": os.path.basename(logfile),
                         "End-to-End latency(ms)": round(total_delay / num_senders, 2),
