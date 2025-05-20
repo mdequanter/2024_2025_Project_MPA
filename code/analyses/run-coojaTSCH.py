@@ -38,11 +38,14 @@ if saveCsv:
 if os.path.exists(cooja_output):
     os.remove(cooja_output)
 
+# Set message rates
+# ex. messageRates = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] 
 messageRates = [20,15,10,8,5,1]
 
 for sendNumbers in messageRates:
-    for batch in range(6,30):
-
+    # bins, start ex. 1, end  ex. 30
+    for batch in range(100,101):
+        
         search_text = "XXXSEND_INTERVALXXX"
         replace_text = f'(({sendNumbers} * CLOCK_SECOND))'
         sendrate = sendNumbers

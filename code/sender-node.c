@@ -13,7 +13,7 @@
 #define UDP_PORT 1234
 
 //#define SEND_INTERVAL    (60 * CLOCK_SECOND / 10)
-#define SEND_INTERVAL    ((10 * CLOCK_SECOND))
+#define SEND_INTERVAL    (60 * CLOCK_SECOND / 10)
 #define START_DELAY      (CLOCK_SECOND * 600)
 #define JITTER_PERCENT   100
 
