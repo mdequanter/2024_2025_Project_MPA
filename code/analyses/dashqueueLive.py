@@ -21,7 +21,7 @@ app.title = "COOJA Live Queue & Reception Monitor"
 app.layout = html.Div([
     html.H2(f"Live TSCH Queue Fill, Reception & Latency ({logfile})"),
     dcc.Graph(id='live-graph'),
-    dcc.Interval(id='interval-component', interval=10 * 1000, n_intervals=0)
+    dcc.Interval(id='interval-component', interval=2 * 1000, n_intervals=0)
 ])
 
 @app.callback(Output('live-graph', 'figure'), [Input('interval-component', 'n_intervals')])
